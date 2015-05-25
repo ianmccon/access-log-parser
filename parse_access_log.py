@@ -13,6 +13,17 @@ def log_data(line_data):
     Function to pull values from parsed log line
     and saved cumulative values to totals dictionary
     '''
+    time = line_data['time_received_datetimeobj'].strftime("%d-%m-%Y %H:%M")
+
+    if time not in totals:
+        totals[time] = {
+            'count': 0,
+            'success': 0,
+            'error': 0,
+            'response_time': 0,
+            'mb_sent': 0
+            }
+
     response_time = int(line_data['time_us'])
     if line_data['response_bytes_clf'] == '-':
         mb_sent = 0
@@ -27,6 +38,7 @@ def log_data(line_data):
     totals[time]['count'] += 1
     totals[time]['response_time'] += response_time
     totals[time]['mb_sent'] += mb_sent
+
 
 def print_results(totals):
     '''
@@ -45,7 +57,7 @@ def print_results(totals):
 def main():
     # Open log file from disk
     try:
-        log = open('we-access.log', 'r')
+        log = open('web-access.log', 'r')
     except IOError:
         print 'The access log could not be found'
         print 'This should be named web-access.log and be in the same directory as this script'
@@ -53,18 +65,7 @@ def main():
 
     for line in log.readlines():
         line_data = line_parser(line)
-        time = line_data['time_received_datetimeobj'].strftime("%d-%m-%Y %H:%M")
-
-        if time not in totals:
-            totals[time] = {
-                'count': 0,
-                'success': 0,
-                'error': 0,
-                'response_time': 0,
-                'mb_sent': 0
-                }
         log_data(line_data)
-
 
     print_results(totals)
 
