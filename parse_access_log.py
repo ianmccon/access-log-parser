@@ -41,25 +41,34 @@ def print_results(totals):
         print '    Mean response time: %s  MBs sent: %s' % (mean_response_time, totals[key]['mb_sent'])
 
 
+# Main routine
+def main():
+    # Open log file from disk
+    try:
+        log = open('we-access.log', 'r')
+    except IOError:
+        print 'The access log could not be found'
+        print 'This should be named web-access.log and be in the same directory as this script'
+        return
 
-log = open('web-access.log', 'r')
+    for line in log.readlines():
+        line_data = line_parser(line)
+        time = line_data['time_received_datetimeobj'].strftime("%d-%m-%Y %H:%M")
 
-for line in log.readlines():
-    line_data = line_parser(line)
-    time = line_data['time_received_datetimeobj'].strftime("%d-%m-%Y %H:%M")
-
-    if time not in totals:
-        totals[time] = {
-            'count': 0,
-            'success': 0,
-            'error': 0,
-            'response_time': 0,
-            'mb_sent': 0
-            }
-    log_data(line_data)
+        if time not in totals:
+            totals[time] = {
+                'count': 0,
+                'success': 0,
+                'error': 0,
+                'response_time': 0,
+                'mb_sent': 0
+                }
+        log_data(line_data)
 
 
-print_results(totals)
+    print_results(totals)
 
 
+if __name__ == '__main__':
+    main()
 
