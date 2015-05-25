@@ -12,6 +12,6 @@ Usage:
 
 This prints a report in the following format
 
-30/Mar/2015:11:11:
-    Requests: 23 successful  0 error
-    Mean response time: 543528 μs  MBs sent: 0.114 MB
+    30/Mar/2015:11:11:
+        Requests: 23 successful  0 error
+        Mean response time: 543528 μs  MBs sent: 0.114 MB
