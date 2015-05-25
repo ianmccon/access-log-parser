@@ -37,7 +37,6 @@ def parse_line(line):
     status = data[8]
     data_sent = data[9]
     response_time = int(data[10])
-
     if time not in totals:
         totals[time] = {
             'count': 0,
@@ -60,6 +59,9 @@ def parse_line(line):
     totals[time]['count'] += 1
     totals[time]['response_time'] += response_time
     totals[time]['bytes_sent'] += bytes_sent
+
+    # Returning data for test purposes
+    return (time, totals[time]['success'], totals[time]['error'], totals[time]['response_time'], totals[time]['bytes_sent'])
 
 
 def print_results(totals):
