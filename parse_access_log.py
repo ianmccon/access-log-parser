@@ -1,12 +1,8 @@
 from apache_log_parser import make_parser
-from pprint import pprint
 
 line_parser = make_parser('%a %l %u %t \"%r\" %>s %b %D')
 
 totals = {}
-
-successful_requests = 0
-error_requests = 0
 
 def log_data(line_data):
     '''
