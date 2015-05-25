@@ -1,9 +1,37 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+# parse_access_log.py
+#
+# Author: Ian McConachie <ian@ianmcconachie.com>
+# Date 25-05-2015
+#
+# This script takes an apache acces log file as input and generates the following metrics
+#
+# * Number of successful requests per minute
+# * Number of error requests per minute
+# * Mean response time per minute
+# * MBs sent per minute
+#
+#
+# Usage:
+#
+#     python parse_access_log.py <<logfile>>
+#
+# This prints a report in the following format
+#
+#     30/Mar/2015:05:04: Requests: 816 successful  2 error - Mean response time: 350734μs - MBs sent: 13.938MB
+#
+
 import sys
 
 totals = {}
 
 def parse_line(line):
+    '''
+    Function that parses each line of the log and extracts the required data
+    and stores this in a dictionary
+    '''
     data = line.split()
     time = data[3][1:-3]
     status = data[8]
@@ -55,7 +83,6 @@ def main(filename):
         return
 
     for line in log.readlines():
-        # line_data = line_parser(line)
         parse_line(line)
 
     print_results(totals)
