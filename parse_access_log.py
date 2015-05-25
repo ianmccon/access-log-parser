@@ -42,9 +42,7 @@ def print_results(totals):
     for key in sorted(totals):
         mean_response_time = totals[key]['response_time'] / totals[key]['count']
         mb_sent = totals[key]['bytes_sent'] / (1024.0*1024.0)
-        print '%s:' % key
-        print '    Requests: %s successful  %s error' % (totals[key]['success'], totals[key]['error'])
-        print '    Mean response time: %s μs  MBs sent: %0.3f MB' % (mean_response_time, mb_sent)
+        print '%s: Requests: %s successful  %s error - Mean response time: %sμs - MBs sent: %0.3fMB' % (key, totals[key]['success'], totals[key]['error'], mean_response_time, mb_sent)
 
 
 # Main routine
