@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 
 totals = {}
 
@@ -47,13 +48,12 @@ def print_results(totals):
 
 
 # Main routine
-def main():
+def main(filename):
     # Open log file from disk
     try:
-        log = open('web-access.log', 'r')
+        log = open(filename, 'r')
     except IOError:
-        print 'The access log could not be found'
-        print 'This should be named web-access.log and be in the same directory as this script'
+        print 'The log file specified could not be found'
         return
 
     for line in log.readlines():
@@ -64,5 +64,10 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    if(len(sys.argv) > 1):
+        filename = sys.argv[1]
+        main(filename)
+    else:
+        print 'You must specify the log filename'
+        print 'Usage: python parse_access_log.py <<logfile>>'
 
