@@ -1,15 +1,13 @@
-from apache_log_parser import make_parser
-
-line_parser = make_parser('%a %l %u %t \"%r\" %>s %b %D')
+# -*- coding: utf-8 -*-
 
 totals = {}
 
-def log_data(line_data):
-    '''
-    Function to pull values from parsed log line
-    and saved cumulative values to totals dictionary
-    '''
-    time = line_data['time_received_datetimeobj'].strftime("%d-%m-%Y %H:%M")
+def parse_line(line):
+    data = line.split()
+    time = data[3][1:-3]
+    status = data[8]
+    data_sent = data[9]
+    response_time = int(data[10])
 
     if time not in totals:
         totals[time] = {
@@ -17,23 +15,22 @@ def log_data(line_data):
             'success': 0,
             'error': 0,
             'response_time': 0,
-            'mb_sent': 0
+            'bytes_sent': 0
             }
 
-    response_time = int(line_data['time_us'])
-    if line_data['response_bytes_clf'] == '-':
-        mb_sent = 0
+    if data_sent == '-':
+        bytes_sent = 0
     else:
-        mb_sent = int(line_data['response_bytes_clf'])
+        bytes_sent = int(data_sent)
 
-    if line_data['status'][0] == '2':
+    if status[0] == '2':
         totals[time]['success'] += 1
     else:
         totals[time]['error'] += 1
 
     totals[time]['count'] += 1
     totals[time]['response_time'] += response_time
-    totals[time]['mb_sent'] += mb_sent
+    totals[time]['bytes_sent'] += bytes_sent
 
 
 def print_results(totals):
@@ -43,10 +40,10 @@ def print_results(totals):
     '''
     for key in sorted(totals):
         mean_response_time = totals[key]['response_time'] / totals[key]['count']
-
+        mb_sent = totals[key]['bytes_sent'] / (1024.0*1024.0)
         print '%s:' % key
         print '    Requests: %s successful  %s error' % (totals[key]['success'], totals[key]['error'])
-        print '    Mean response time: %s  MBs sent: %s' % (mean_response_time, totals[key]['mb_sent'])
+        print '    Mean response time: %s μs  MBs sent: %0.3f MB' % (mean_response_time, mb_sent)
 
 
 # Main routine
@@ -60,8 +57,8 @@ def main():
         return
 
     for line in log.readlines():
-        line_data = line_parser(line)
-        log_data(line_data)
+        # line_data = line_parser(line)
+        parse_line(line)
 
     print_results(totals)
 
